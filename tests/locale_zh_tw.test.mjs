@@ -2,6 +2,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
+import { findLanguage } from '../web/locales/languages.js';
+
 // A small page for i18n.js. It starts in zh-TW.
 const saved = new Map([['aniimax-language', 'zh-TW']]);
 globalThis.localStorage = { getItem: key => saved.get(key), setItem: (key, value) => saved.set(key, value) };
@@ -25,7 +27,7 @@ globalThis.MutationObserver = class { observe() {} };
 const i18n = await import('../web/i18n.js');
 
 const catalog = JSON.parse(await readFile(new URL('../web/locales/zh-TW.json', import.meta.url)));
-const translate = i18n.createZhTwTranslator(catalog);
+const translate = i18n.createCjkTranslator(catalog, findLanguage('zh-TW').joiners);
 
 // Each entry keeps the placeholders of its English phrase.
 for (const [source, target] of Object.entries(catalog)) {

@@ -582,9 +582,11 @@ cargo doc --open
 
 ### Languages
 
-The web language selector and CLI `--language en|ru` use English by default. English UI text is the source; `web/locales/en.json` inventories its phrases for translation checks, and `web/locales/ru.json` maps them to Russian. To add a language, add a matching JSON catalog and register its code and native label in `web/i18n.js`. Keep facility, item, and solver identifiers in English; translation happens only when results are displayed. Run `node tests/locale.test.mjs` to check catalog parity and switching.
+The web language selector and CLI `--language en|ru` use English by default. English UI text is the source; `web/locales/en.json` inventories its phrases for translation checks, `web/locales/ru.json` maps them to Russian and `web/locales/es.json` to Spanish (web only; the CLI has no Spanish). Keep facility, item, and solver identifiers in English; translation happens only when results are displayed.
 
-Traditional Chinese uses the code `zh-TW` in the web app and `--language zh-tw` in the CLI. The CLI also accepts `zh-TW` and `ZH-TW`. Its catalog is `web/locales/zh-TW.json`. Its own rules are in a zh-TW block in `web/i18n.js` and in `src/locale/zh_tw.rs`, so the other languages do not change. A phrase that the zh-TW catalog does not hold shows in English. Run `node tests/locale_zh_tw.test.mjs` and `cargo test --test zh_tw_locale_tests --test cli_language_tests` to check zh-TW.
+Web languages are listed in one place, `web/locales/languages.js`. To add one, add an entry there (its code, native label, number locale, whether the catalog is `complete`, and `rules: 'cjk'` with `joiners` for languages written without spaces between words) and the catalog `web/locales/<code>.json`. The selector, number formatting, translation rules and math window pick it up from that entry; nothing else needs a change. Run `node --test` to check that every registered language has a catalog, that complete catalogs hold exactly en.json's phrases, and that placeholders match.
+
+Traditional Chinese uses the code `zh-TW` in the web app and `--language zh-tw` in the CLI. The CLI also accepts `zh-TW` and `ZH-TW`. Its catalog is `web/locales/zh-TW.json`. On the web it uses the shared `cjk` rules in `web/i18n.js`; the CLI's rules are in `src/locale/zh_tw.rs`, so the other languages do not change. A phrase that the zh-TW catalog does not hold shows in English. Run `node tests/locale_zh_tw.test.mjs` and `cargo test --test zh_tw_locale_tests --test cli_language_tests` to check zh-TW.
 
 ### Building the Web App
 

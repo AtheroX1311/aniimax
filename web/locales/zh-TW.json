@@ -922,5 +922,20 @@
   "+{n}/day {label}": "{label} +{n}/天",
   "~+{n}/day {label}": "~{label} +{n}/天",
   "Ranked by {measure}. {helpful} of {checked} help. Within RV {level} limits.": "依{measure}排序。已檢查 {checked} 項，其中 {helpful} 項有幫助。在露營車家園 {level} 的限制內。",
-  "Checking {checked} of {total}… Within RV {level} limits.": "正在檢查第 {checked} 項，共 {total} 項…在露營車家園 {level} 的限制內。"
+  "Checking {checked} of {total}… Within RV {level} limits.": "正在檢查第 {checked} 項，共 {total} 項…在露營車家園 {level} 的限制內。",
+  "Overlap": "重疊",
+  "idle": "閒置",
+  "{job} on {facility}": "{facility}{job}",
+  "Your changes are saved in this browser.": "你的變更已儲存在此瀏覽器中。",
+  "Link copied. It includes your current setup.": "已複製連結，其中包含你目前的設定。",
+  "Copy the link above to share your setup.": "複製上方連結即可分享你的設定。",
+  "Could not create a share link for this setup.": "無法為此設定建立分享連結。",
+  "This share link is invalid. Your saved setup was kept.": "此分享連結無效，已保留你儲存的設定。",
+  "Shared setup loaded. Your saved setup is kept until you edit this one.": "已載入分享的設定。在你編輯這份設定之前，會保留你儲存的設定。",
+  "{mode} where both reach": "兩者皆覆蓋處為{mode}",
+  "{mode}, this plan's plots": "{mode}，此規劃的地塊",
+  "That's {n} Aniimo, more than the {total} an RV level {level} homeland holds.": "共 {n} 隻伊莫，超過露營車等級 {level} 家園可容納的 {total} 隻。",
+  "Most {item}": "最多{item}",
+  "Lv.{level}+": "Lv.{level}+",
+  "+20% speed": "速度 +20%"
 }

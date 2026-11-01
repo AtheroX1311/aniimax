@@ -1,13 +1,35 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 
-const english = JSON.parse(await readFile(new URL('../web/locales/en.json', import.meta.url)));
-const russian = JSON.parse(await readFile(new URL('../web/locales/ru.json', import.meta.url)));
-assert.deepEqual(new Set(english), new Set(Object.keys(russian)));
-for (const [source, target] of Object.entries(russian)) {
-    const slots = text => new Set(text.match(/\{[a-z_]+\}/gi) || []);
-    assert.deepEqual(slots(source), slots(target), source);
+import { LANGUAGES, SOURCE_LANGUAGE } from '../web/locales/languages.js';
+import { RETYPESET_LANGUAGES } from '../web/math-retypeset.js';
+
+// Every registered language has a catalog and every catalog is registered, so a new language needs
+// only its entry in languages.js and its JSON file.
+const locales = new URL('../web/locales/', import.meta.url);
+const codes = LANGUAGES.map(({ code }) => code);
+assert.equal(new Set(codes).size, codes.length, 'language codes are unique');
+assert.ok(codes.includes(SOURCE_LANGUAGE));
+const catalogFiles = (await readdir(locales)).filter(file => file.endsWith('.json')).map(file => file.slice(0, -'.json'.length));
+assert.deepEqual(new Set(catalogFiles), new Set(codes), 'each language in languages.js has web/locales/<code>.json');
+for (const { code, name, rules = 'spaced', joiners } of LANGUAGES) {
+    assert.ok(name, `${code} has a selector label`);
+    assert.ok(['spaced', 'cjk'].includes(rules), `${code} rules`);
+    assert.ok(rules === 'cjk' || !joiners, `${code}: joiners apply only to 'cjk' rules`);
+}
+assert.deepEqual(RETYPESET_LANGUAGES, new Set(codes.filter(code => code !== SOURCE_LANGUAGE)));
+
+// Each translation keeps the placeholders of its English phrase, and a complete catalog holds every
+// phrase that en.json inventories.
+const english = JSON.parse(await readFile(new URL(`${SOURCE_LANGUAGE}.json`, locales)));
+for (const { code, complete } of LANGUAGES.filter(({ code }) => code !== SOURCE_LANGUAGE)) {
+    const catalog = JSON.parse(await readFile(new URL(`${code}.json`, locales)));
+    if (complete) assert.deepEqual(new Set(Object.keys(catalog)), new Set(english), `${code}.json holds exactly en.json's phrases`);
+    for (const [source, target] of Object.entries(catalog)) {
+        const slots = text => new Set(text.match(/\{[a-z_]+\}/gi) || []);
+        assert.deepEqual(slots(source), slots(target), `${code}: ${source}`);
+    }
 }
 
 const saved = new Map([['aniimax-language', 'ru']]);
@@ -106,6 +128,14 @@ assert.equal(translate('No level-4 Perfumery Aniimo is known in the game yet. Pl
 assert.equal(translate('Grass Lv.1 · Sowing farmland'), 'Трава ур. 1 · Посев на пашне');
 assert.equal(translate('Hauling, any level · carries produce to storage; add more if produce piles up'), 'Перенос, любой уровень · доставляет продукцию на склад; добавьте больше Анимо, если она скапливается');
 assert.equal(translate('Instinctive or Energetic'), 'Инстинктивный или Энергичный');
+// Labels glued together from catalog phrases are translated part by part.
+assert.equal(translate('Plant cost: 1'), 'Стоимость посадки: 1');
+assert.equal(translate('3× Heat Furnace (Scorching)'), '3× Тепловая печь (Жара)');
+assert.equal(translate('Woodland: Cocoa ×2'), 'Лесной массив: Какао ×2');
+assert.equal(translate('Heat Furnace 1'), 'Тепловая печь 1');
+assert.equal(translate('Fire Lv.4 · Nimble (N) (+20% speed) · Blazing Stove (Cranberry Chocolate)'), 'Огонь ур. 4 · Шустрый (N) (+20% скорости) · Пылающая плита (Клюквенный шоколад)');
+assert.equal(translate('Simmering Pot (Cocoa Spread), Simmering Pot (Malt Sugar)'), 'Томильный котёл (Какао-спред), Томильный котёл (Солодовый сахар)');
+assert.equal(translate('134 Home Coins/sec'), '134 Монеты дома/с');
 selector.value = 'en';
 await change();
 assert.equal(node.nodeValue, 'Your Homeland');

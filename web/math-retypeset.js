@@ -7,7 +7,11 @@
 // This module touches no page globals. math-translation.js connects it to the page, and the tests
 // give it stand-ins.
 
-export const RETYPESET_LANGUAGES = new Set(['zh-TW']);
+import { LANGUAGES, SOURCE_LANGUAGE } from './locales/languages.js';
+
+// Every translated language: a typeset paragraph is split around its formulas, which no catalog
+// entry matches.
+export const RETYPESET_LANGUAGES = new Set(LANGUAGES.map(({ code }) => code).filter(code => code !== SOURCE_LANGUAGE));
 
 // Returns a function that queues one retypeset for the current language. The queued retypesets
 // run one at a time, in order. Each call returns a promise that settles when its turn is done.
