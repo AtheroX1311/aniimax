@@ -2090,6 +2090,17 @@ tr:hover .skip-row,
     margin-left: 0.35rem;
 }
 
+/* An event that has ended: its recipes stay listed for reference, muted. */
+.tag.ended {
+    color: var(--text-muted);
+    background: color-mix(in srgb, var(--text-muted) 14%, transparent);
+    margin-left: 0.35rem;
+}
+
+.recipe-table tr.ended {
+    color: var(--text-muted);
+}
+
 /* "Fill from RV level" in advanced mode. */
 .fill-row {
     display: flex;
@@ -2421,7 +2432,7 @@ tr:hover .skip-row,
     vertical-align: super;
 }
 
-/* Harvest Moon Festival: a switch, then the season's inputs while it's on. */
+/* Seasonal events: a switch, then the event picker and its inputs while it's on. */
 .season {
     margin: 0 0 1.25rem;
 }
@@ -2526,6 +2537,24 @@ tr:hover .skip-row,
     fill: var(--text);
     font-weight: 600;
     pointer-events: none;
+}
+
+/* What a piece makes, under its initials (the "Show recipe" toggle). */
+.layout-svg .layout-recipe {
+    font-weight: 500;
+}
+
+/* Zoomed in (Ctrl + scroll), the layout can be dragged around. */
+.layout-svg.zoomed {
+    cursor: grab;
+}
+
+.layout-svg.panning {
+    cursor: grabbing;
+}
+
+.layout-zoom-hint {
+    margin: 0.5rem 0 0;
 }
 
 .layout-storage {
